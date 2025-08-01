@@ -216,6 +216,68 @@ struct regex_context* create_regex_context_int(char* regex){//TODO:error handlin
         }
         continue;
        }
+       if(regex[crchar]=='['){
+        crchar++;
+        if(regex[crchar]==':'){
+         char *members="";
+         crchar++;
+         if(!strncmp(regex+crchar,"alpha:]",7)){
+          crchar+=7;
+          members="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+         }else if(!strncmp(regex+crchar,"digit:]",7)){
+          crchar+=7;
+          members="0123456789";
+         }else if(!strncmp(regex+crchar,"alnum:]",7)){
+          crchar+=7;
+          members="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+         }else if(!strncmp(regex+crchar,"blank:]",7)){
+          crchar+=7;
+          members=" \t";
+         }else if(!strncmp(regex+crchar,"cntrl:]",7)){
+          crchar+=7;
+          members="\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\0x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f\x7f";
+         }else if(!strncmp(regex+crchar,"lower:]",7)){
+          crchar+=7;
+          members="abcdefghijklmnopqrstuvwxyz";
+         }else if(!strncmp(regex+crchar,"punct:]",7)){
+          crchar+=7;
+          members="!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+         }else if(!strncmp(regex+crchar,"space:]",7)){
+          crchar+=7;
+          members=" \t\r\n\v\f";
+         }else if(!strncmp(regex+crchar,"upper:]",7)){
+          crchar+=7;
+          members="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+         }else if(!strncmp(regex+crchar,"graph:]",7)){
+          crchar+=7;
+          members="!\"#$%&'()*+,-./0123456789:;"\
+          "<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
+          "[\\]^_`abcdefghijklmnopqrstuv"\
+          "wxyz{|}~";
+         }else if(!strncmp(regex+crchar,"print:]",7)){
+          crchar+=7;
+          members=" !\"#$%&'()*+,-./0123456789:;"\
+          "<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
+          "[\\]^_`abcdefghijklmnopqrstuv"\
+          "wxyz{|}~";
+         }else if(!strncmp(regex+crchar,"xdigit:]",8)){
+          crchar+=8;
+          members="0123456789abcdefABCDEF";
+         }
+         for(int i=0;members[i]!=0;i++){
+          set_bit(selected_chars,members[i]);
+         }
+        }
+        if(regex[crchar]=='='){
+         crchar++;
+         set_bit(selected_chars,regex[crchar]);
+         crchar++;
+         if(!strncmp(regex+crchar,"=]",2)){
+          crchar+=2;
+         }
+        }
+        continue;
+       }
        set_bit(selected_chars,regex[crchar]);
       }
       if(isneg){
@@ -392,15 +454,15 @@ struct regex_context* create_regex_context_int(char* regex){//TODO:error handlin
        members="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       }else if(!strncmp(regex+crchar,"graph:]",7)){
        crchar+=7;
-       members="!\"#$%&'()*+,-./0123456789:;"
-       "<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-       "[\\]^_`abcdefghijklmnopqrstuv"
+       members="!\"#$%&'()*+,-./0123456789:;"\
+       "<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
+       "[\\]^_`abcdefghijklmnopqrstuv"\
        "wxyz{|}~";
       }else if(!strncmp(regex+crchar,"print:]",7)){
        crchar+=7;
-       members=" !\"#$%&'()*+,-./0123456789:;"
-       "<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-       "[\\]^_`abcdefghijklmnopqrstuv"
+       members=" !\"#$%&'()*+,-./0123456789:;"\
+       "<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
+       "[\\]^_`abcdefghijklmnopqrstuv"\
        "wxyz{|}~";
       }else if(!strncmp(regex+crchar,"xdigit:]",8)){
        crchar+=8;
