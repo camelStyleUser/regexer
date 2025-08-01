@@ -1,0 +1,9 @@
+this is a simple regex engine written from scratch because i wanted to learn how to parse stuff
+don't use it please,
+there are probably better options available
+
+error handling is NOT implemented
+nested groups are NOT supported
+etc...
+
+a normal regex engine can't be THAT big so that you avoid it and use this instead
