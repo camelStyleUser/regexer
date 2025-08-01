@@ -707,7 +707,7 @@ int free_node(struct regex_node* node){
  free(node);
  return 0;
 }
-int dispose_regex_context(struct regex_context* context){//TODO:impl
+int dispose_regex_context(struct regex_context* context){
  for(int i=0;i<9;i++){
   if(context->backrefs.backrefs[i]) free(context->backrefs.backrefs[i]);
   context->backrefs.backrefs[i]=NULL;
@@ -720,6 +720,7 @@ int dispose_regex_context(struct regex_context* context){//TODO:impl
  }
  context->matches=NULL;
  free_node(context->start);
+ free(context);
  return 0;
 }
 #ifdef TEST
